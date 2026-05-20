@@ -1,23 +1,18 @@
-<!-- =========================================
- FRONTEND HTML (GitHub Pages)
- Secure Checkout + Agreement Logging
-========================================= -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <title>Secure Checkout</title>
+  <title>Secure Checkout at Tradingku</title>
 
   <style>
 
     body{
       font-family: Arial, sans-serif;
       background:#f5f7fb;
-      padding:40px 20px;
       margin:0;
+      padding:40px 20px;
       color:#222;
     }
 
@@ -104,6 +99,11 @@
       font-size:14px;
     }
 
+    .small{
+      font-size:13px;
+      color:#666;
+    }
+
   </style>
 </head>
 
@@ -118,17 +118,27 @@
   </p>
 
   <div class="warning">
-    All products are digital and non-refundable once delivered, accessed, downloaded, or activated.
+
+    <strong>Important Notice</strong><br><br>
+
+    • All products are digital products.<br>
+    • No physical item will be shipped.<br>
+    • All sales are final and non-refundable.<br>
+    • Trading involves substantial financial risk.<br>
+    • No guaranteed profits or income.<br>
+    • Use at your own risk.<br>
+    • This page serves only as a payment processing platform.
+
   </div>
 
   <h2>Risk Disclaimer</h2>
 
   <ul>
-    <li>Trading involves substantial financial risk.</li>
-    <li>No guaranteed profits or income.</li>
-    <li>Use at your own risk.</li>
-    <li>You are fully responsible for your trading decisions.</li>
-    <li>This page only serves as a payment processing platform.</li>
+    <li>You fully understand the risks involved in trading.</li>
+    <li>You are purchasing voluntarily.</li>
+    <li>You are fully responsible for your own trading decisions.</li>
+    <li>We are not responsible for financial losses.</li>
+    <li>Please think carefully before continuing.</li>
   </ul>
 
   <div class="box">
@@ -167,12 +177,12 @@
         placeholder="49"
       />
 
-            <input
-        type="hidden"
-        id="paypalLink"
-	value="https://www.paypal.com/ncp/payment/ZXRFHPA23TZ7W"
+      <label>PayPal Business Email</label>
+      <input
+        type="email"
+        id="paypalBusiness"
         required
-	readonly
+        placeholder="paypal@yourdomain.com"
       />
 
       <div style="margin-top:20px; margin-bottom:20px;">
@@ -184,8 +194,10 @@
             style="width:auto;"
           />
 
-          I have read, understood, and agreed to the <a href="https://terms.tradingku.my.id/terms-of-digital.html" target="_blank">Terms of Service,
+          I have read, understood, and agreed to the
+          <a href="https://terms.tradingku.my.id/terms-of-digital.html" target="_blank">Terms of Service,
           Refund Policy, and Risk Disclaimer</a>.
+
         </label>
 
       </div>
@@ -195,8 +207,13 @@
         id="payBtn"
         disabled
       >
-        Pay with PayPal
+        Continue to PayPal
       </button>
+
+      <p class="small">
+        Your agreement confirmation, IP address,
+        and transaction proof will be securely logged.
+      </p>
 
     </form>
 
@@ -210,16 +227,16 @@
 
 <script>
 
-  // =========================================
+  // ========================================
   // CONFIG
-  // =========================================
+  // ========================================
 
   const LOG_API_ENDPOINT =
     "https://clubbing-paypal-log-api.webcracking.workers.dev/";
 
-  // =========================================
+  // ========================================
   // ENABLE BUTTON
-  // =========================================
+  // ========================================
 
   const checkbox =
     document.getElementById("agreeCheckbox");
@@ -231,9 +248,9 @@
     payBtn.disabled = !checkbox.checked;
   });
 
-  // =========================================
+  // ========================================
   // SUBMIT
-  // =========================================
+  // ========================================
 
   document
     .getElementById("checkoutForm")
@@ -242,7 +259,7 @@
       e.preventDefault();
 
       if (!checkbox.checked) {
-        alert("Please agree to the Terms first.");
+        alert("You must agree first.");
         return;
       }
 
@@ -251,9 +268,9 @@
 
       try {
 
-        // =========================================
-        // GET FORM DATA
-        // =========================================
+        // ========================================
+        // FORM DATA
+        // ========================================
 
         const email =
           document.getElementById("email").value;
@@ -267,36 +284,27 @@
         const amount =
           document.getElementById("amount").value;
 
-        const paypalLink =
-          document.getElementById("paypalLink").value;
+        const paypalBusiness =
+          document.getElementById("paypalBusiness").value;
 
-        // =========================================
-        // GENERATE AGREEMENT ID
-        // =========================================
-
-        const agreementId =
-          crypto.randomUUID();
-
-        // =========================================
-        // BUILD PAYLOAD
-        // =========================================
+        // ========================================
+        // PAYLOAD
+        // ========================================
 
         const payload = {
-
-          agreement_id: agreementId,
 
           timestamp:
             new Date().toISOString(),
 
-          email: email,
+          email,
 
-          product_name: productName,
+          product_name:
+            productName,
 
-          product_link: productLink,
+          product_link:
+            productLink,
 
-          amount: amount,
-
-          paypal_link: paypalLink,
+          amount,
 
           checkbox_status:
             checkbox.checked,
@@ -311,20 +319,23 @@
 
         };
 
-        // =========================================
-        // SEND LOG TO API
-        // =========================================
+        // ========================================
+        // SEND TO WORKER
+        // ========================================
 
-        const response = await fetch(
-          LOG_API_ENDPOINT,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-          }
-        );
+        const response =
+          await fetch(
+            LOG_API_ENDPOINT,
+            {
+              method: "POST",
+              headers: {
+                "Content-Type":
+                  "application/json"
+              },
+              body:
+                JSON.stringify(payload)
+            }
+          );
 
         const result =
           await response.json();
@@ -335,11 +346,74 @@
           );
         }
 
-        // =========================================
-        // REDIRECT TO PAYPAL
-        // =========================================
+        // ========================================
+        // PAYPAL URL
+        // ========================================
 
-        window.location.href = paypalLink;
+        const paypalUrl =
+          new URL(
+            "https://www.paypal.com/cgi-bin/webscr"
+          );
+
+        paypalUrl.searchParams.set(
+          "cmd",
+          "_xclick"
+        );
+
+        paypalUrl.searchParams.set(
+          "business",
+          paypalBusiness
+        );
+
+        paypalUrl.searchParams.set(
+          "item_name",
+          productName
+        );
+
+        paypalUrl.searchParams.set(
+          "amount",
+          amount
+        );
+
+        paypalUrl.searchParams.set(
+          "currency_code",
+          "USD"
+        );
+
+        // ========================================
+        // IMPORTANT PROOF FIELDS
+        // ========================================
+
+        paypalUrl.searchParams.set(
+          "invoice",
+          result.agreement_id
+        );
+
+        paypalUrl.searchParams.set(
+          "custom",
+          result.agreement_signature
+        );
+
+        // ========================================
+        // OPTIONAL URLS
+        // ========================================
+
+        paypalUrl.searchParams.set(
+          "return",
+          "https://yourdomain.com/success"
+        );
+
+        paypalUrl.searchParams.set(
+          "cancel_return",
+          "https://yourdomain.com/cancel"
+        );
+
+        // ========================================
+        // REDIRECT
+        // ========================================
+
+        window.location.href =
+          paypalUrl.toString();
 
       } catch (err) {
 
@@ -348,8 +422,9 @@
         alert("Checkout failed.");
 
         payBtn.disabled = false;
+
         payBtn.innerText =
-          "Pay with PayPal";
+          "Continue to PayPal";
 
       }
 
