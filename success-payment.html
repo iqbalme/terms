@@ -1,0 +1,159 @@
+<!-- =========================================
+ success.html
+========================================= -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>Payment Successful</title>
+
+  <style>
+
+    body{
+      margin:0;
+      padding:0;
+      font-family:Arial, sans-serif;
+      background:#f4f7fb;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      color:#222;
+    }
+
+    .card{
+      background:#fff;
+      max-width:600px;
+      width:90%;
+      border-radius:16px;
+      padding:40px;
+      text-align:center;
+      box-shadow:0 4px 20px rgba(0,0,0,0.08);
+    }
+
+    .icon{
+      width:90px;
+      height:90px;
+      background:#dcfce7;
+      color:#16a34a;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:48px;
+      margin:0 auto 20px;
+    }
+
+    h1{
+      margin-top:0;
+      color:#111827;
+    }
+
+    p{
+      line-height:1.7;
+      color:#4b5563;
+    }
+
+    .box{
+      background:#f3f4f6;
+      padding:18px;
+      border-radius:10px;
+      margin-top:25px;
+      text-align:left;
+      word-break:break-word;
+    }
+
+    .btn{
+      display:inline-block;
+      margin-top:30px;
+      background:#2563eb;
+      color:#fff;
+      text-decoration:none;
+      padding:14px 24px;
+      border-radius:10px;
+      font-weight:bold;
+      transition:0.3s;
+    }
+
+    .btn:hover{
+      background:#1d4ed8;
+    }
+
+    .small{
+      font-size:13px;
+      color:#6b7280;
+      margin-top:20px;
+    }
+
+  </style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <div class="icon">
+    ✓
+  </div>
+
+  <h1>Payment Successful</h1>
+
+  <p>
+    Thank you for your purchase.
+    Your payment has been successfully completed.
+  </p>
+
+  <div class="box">
+
+    <strong>Transaction Information</strong><br><br>
+
+    Agreement ID:
+    <span id="invoice">-</span><br><br>
+
+    Signature:
+    <span id="custom">-</span>
+
+  </div>
+
+  <p class="small">
+    Your agreement confirmation and payment proof
+    have been securely recorded.
+  </p>
+
+  <a href="/" class="btn">
+    Back to Homepage
+  </a>
+
+</div>
+
+<script>
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+  // PayPal biasanya return invoice/custom
+  const invoice =
+    params.get("invoice") ||
+    params.get("cm") ||
+    "-";
+
+  const custom =
+    params.get("custom") || "-";
+
+  document.getElementById(
+    "invoice"
+  ).innerText = invoice;
+
+  document.getElementById(
+    "custom"
+  ).innerText = custom;
+
+</script>
+
+</body>
+</html>
